@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const Person = require('./models/person');
 
 const app = express();
@@ -24,13 +25,13 @@ app.get('/api/persons', (request, response) => {
     });
 })
 
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find(p => p.id === id);
+// app.get('/api/persons/:id', (request, response) => {
+//   const id = Number(request.params.id);
+//   const person = persons.find(p => p.id === id);
 
-  if (person) response.json(person)
-  else response.status(404).end()
-})
+//   if (person) response.json(person)
+//   else response.status(404).end()
+// })
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id);
@@ -42,14 +43,6 @@ app.delete('/api/persons/:id', (request, response) => {
   }
   else response.status(400).end();
 })
-
-// post data functions
-const generateID = () => {
-  const maxID = persons.length > 0
-    ? Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
-    : 0
-  return maxID + 1
-}
 
 app.post('/api/persons', (request, response) => {
   const body = request.body;
@@ -66,21 +59,18 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.find(p => p.name === body.name)) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
-
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateID()
-  }
+    number: body.number
+  });
 
-  persons = persons.concat(person);
-
-  response.json(persons);
+  person.save().then(result => {
+    Person
+      .find({})
+      .then(people => {
+        response.json(people);
+      });
+  })
 })
 
 const PORT = process.env.PORT;
