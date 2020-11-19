@@ -56,16 +56,8 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
   const body = request.body;
 
-  if (!body.name) {
-    return response.status(400).json({
-      error: 'missing name'
-    })
-  }
-
-  if (!body.number) {
-    return response.status(400).json({
-      error: 'missing number'
-    })
+  if (!body.name || !body.number) {
+    return response.status(400).json({ error: 'missing content' })
   }
 
   const person = new Person({
@@ -80,6 +72,23 @@ app.post('/api/persons', (request, response) => {
         response.json(people);
       });
   })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  console.log(request.params.id)
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 const PORT = process.env.PORT;
