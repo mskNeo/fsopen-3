@@ -28,6 +28,14 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
+app.get('/info', (request, response) => {
+  Person
+    .find({})
+    .then(people => {
+      response.send(`There are ${people.length} entries in phonebook at ${new Date()}`);
+    });
+})
+
 app.get('/api/persons', (request, response) => {
   Person
     .find({})
