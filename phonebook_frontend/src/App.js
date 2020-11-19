@@ -68,7 +68,7 @@ const App = () => {
           })
           .catch(error => {
             console.log(error.response.data)
-            handleNotification(`${updatedPerson.name} not found in server`, 'error')
+            handleNotification(`${updatedPerson.name} not in server`, 'error')
           })
       }
     } else {
