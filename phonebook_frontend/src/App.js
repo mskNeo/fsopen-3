@@ -82,7 +82,7 @@ const App = () => {
         })
         .catch(error => {
           console.log(error)
-          handleNotification(`Make sure to run the database server`, 'error')
+          handleNotification('Missing content', 'error')
         })
     }
   }
