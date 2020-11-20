@@ -81,8 +81,8 @@ const App = () => {
           setNewNum('')
         })
         .catch(error => {
-          console.log(error)
-          handleNotification('Missing content', 'error')
+          console.log(error.response.data)
+          handleNotification('Validation error: fix input fields (name: 3 character min, number: 8 character min)', 'error')
         })
     }
   }
