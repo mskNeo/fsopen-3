@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node backend.js",
-    "dev": "nodemon backend.js"
+    "dev": "nodemon backend.js",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "Mahdeen Khan",
@@ -29,5 +30,8 @@
     "morgan": "^1.10.0",
     "node": "^14.15.1",
     "nodemon": "^2.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^7.13.0"
   }
 }
