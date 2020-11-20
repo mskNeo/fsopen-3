@@ -77,8 +77,9 @@ app.post('/api/persons', (request, response, next) => {
 
   person.save()
     .then(savedPerson => savedPerson.toJSON())
+    // eslint-disable-next-line no-unused-vars
     .then(result => {
-      response.json(result)
+      // response.json(result)
       Person
         .find({})
         .then(people => {
