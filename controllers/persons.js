@@ -1,35 +1,7 @@
-require('dotenv').config()
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const Person = require('./models/person')
+const personsRouter = require('express').Router()
+const Person = require('../models/person')
 
-const app = express()
-app.use(express.static('build'))
-app.use(express.json())
-app.use(cors())
-
-morgan.token('body', (req) => {
-  if (req.method === 'POST') return JSON.stringify(req.body)
-})
-
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-
-const errorHandler = (error, request, response, next) => {
-  console.error(error.message)
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } if (error.name === 'ValidationError') {
-    return response.status(400).json({ error: error.message })
-  }
-
-  next(error)
-}
-
-app.use(errorHandler)
-
-app.get('/api/info', (request, response) => {
+personsRouter.get('/info', (request, response) => {
   Person
     .find({})
     .then(people => {
@@ -37,7 +9,7 @@ app.get('/api/info', (request, response) => {
     })
 })
 
-app.get('/api/persons', (request, response) => {
+personsRouter.get('/', (request, response) => {
   Person
     .find({})
     .then(people => {
@@ -45,7 +17,7 @@ app.get('/api/persons', (request, response) => {
     })
 })
 
-app.get('/api/persons/:id', (request, response, next) => {
+personsRouter.get('/:id', (request, response, next) => {
   Person.findById(request.params.id)
     .then(person => {
       if (person) response.json(person)
@@ -54,7 +26,7 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response, next) => {
+personsRouter.delete('/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
   // eslint-disable-next-line no-unused-vars
     .then(result => {
@@ -63,7 +35,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response, next) => {
+personsRouter.post('/', (request, response, next) => {
   const body = request.body
 
   // if (!body.name || !body.number) {
@@ -89,7 +61,7 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.put('/api/persons/:id', (request, response, next) => {
+personsRouter.put('/:id', (request, response, next) => {
   const body = request.body
 
   console.log(request.params.id)
@@ -106,7 +78,4 @@ app.put('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const PORT = process.env.PORT
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`)
-})
+module.exports = personsRouter
